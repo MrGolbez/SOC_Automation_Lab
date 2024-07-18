@@ -31,7 +31,7 @@ The Detection Lab project aimed to establish a controlled environment for simula
 
 ## Visual Diagram of Our SOC Automation Lab
 
-![Security Operations Center Lab Diagram](SOC Automation Lab/SOC Lab Diagram.png)
+![SOC Lab Diagram](https://github.com/user-attachments/assets/aa1344d9-7089-40ae-a3b5-438d3d177afc)
 
 ## Project Walkthrough
 
@@ -42,13 +42,18 @@ I started by sketching out my SOC Automation Lab using draw.io. This diagram was
 - Downloaded Sysmon v15.14 from Microsoft.
 - Replaced the default config.xml with sysmonconfig.xml from [this GitHub repo](https://github.com/olafhartong/sysmon-modular/blob/master/sysmonconfig.xml).
 - Installed Sysmon using PowerShell: `.\Sysmon64.exe`.
+- Once Sysmon is installed you will want to double check that sysmonconfig is in the same directory as sysmon.
+- Sysmon will create lots of noise and collect everything.
+- This is why following through Olafhartongs repo wil help ensure it does not make too much noice. 
 
-![Sysmon Installation](path/to/screenshot_sysmon_installation.png)
+
+![Installing sysmon](https://github.com/user-attachments/assets/4d135abe-c0e1-4f3a-b4dd-33c76bb0433d)
+![verifying sysmon installed](https://github.com/user-attachments/assets/292cdeb8-708d-4a9f-9200-4bdb33b5abb0)
+![Ensuring sysmonconfig is same directory as sysmon](https://github.com/user-attachments/assets/dacf07c1-d615-4e9b-a760-7c4a5778308f)
 
 ### Step 3: Choosing a Cloud Provider
 To host Wazuh & TheHive servers, I took advantage of Digital Ocean's $200 credit for new users.
-
-![Digital Ocean Droplet Setup](path/to/screenshot_droplet_setup.png)
+You can use any Cloud Provider you would like but as I mentioned I took advantage of Digital Ocean's new user credit and wanted to gain some experience using the platform as I have heard a lot of good things about it. 
 
 ### Step 4: Creating Wazuh & TheHive Servers
 - Created Droplets with the following specs:
@@ -57,39 +62,51 @@ To host Wazuh & TheHive servers, I took advantage of Digital Ocean's $200 credit
   - **Disk**: NVMe SSD
   - **8 GB RAM / 2 Intel CPUs, 160 GB NVMe SSDs, 5 TB Transfer
 - Configured server access via SSH.
+- I used the same droplet configuration for both of my servers shown below.
 
-![Droplet Creation](path/to/screenshot_droplet_creation.png)
+![creating Ubuntu droplet](https://github.com/user-attachments/assets/749259c1-90b7-4c89-a05a-8d64a4fd8197)
+
 
 ### Step 5: Creating a Firewall
 I configured a firewall to initially allow all TCP and UDP traffic for setup purposes, ensuring our servers are protected.
 
-![Firewall Rule Configuration](path/to/screenshot_firewall_configuration.png)
+![Firewall Rules](https://github.com/user-attachments/assets/d0b0d1a3-01f5-41c1-9d12-82b40e85a75a)
 
 ### Step 6: Adding Droplets to the Firewall
-Added the Wazuh & TheHive Droplets to the firewall for enhanced security.
+- Added the Wazuh & TheHive Droplets to the firewall for enhanced security.
+- Click on Firewall --> Add Droplets --> Choose the Droplet --> Repeat for the other Droplets.
+- The screenshot shows what a Droplet being added into a Firewall looks like. 
 
-![Droplets Added to Firewall](path/to/screenshot_droplets_firewall.png)
+![adding Wazuh to firewall](https://github.com/user-attachments/assets/299f8d44-c709-4b09-97c7-dd39bd7e632a)
+![Servers added to Firewall](https://github.com/user-attachments/assets/911edee0-4012-43e5-a39f-b9078e3bd369)
 
 ### Step 7: Preparing for Configuration
 Noted down public IP addresses and SSHed into each server to prepare for configuration.
+- IMPORTANT STEP! Moving forward we will be given various IPs, and credentials for our servers and services. It is important to notate these down in your documentation.
+- There are ways to get something like TheHive credentials again but is extra steps and ensuring proper documentation will always help!
 
 ### Step 8: Configuring Wazuh Server
 - Updated and upgraded packages.
 - Installed Wazuh using: `curl -sO https://packages.wazuh.com/4.7/wazuh-install.sh && sudo bash ./wazuh-install.sh -a`.
+- Start up and run the update and upgrade on your Wazuh server: `sudo apt-get update && apt-get upgrade -y`
+- This will get the Dashboard set up but we need to do some configuration to ensure proper logging and such which we will do after setting up TheHive.
 
-![Wazuh Installation](path/to/screenshot_wazuh_installation.png)
+![Wazuh dashboard successful login!](https://github.com/user-attachments/assets/1cf5e8ee-30ce-45cc-9829-09deb108b542)
+![sysmon rules for wazuh](https://github.com/user-attachments/assets/6373520a-2421-422d-aa24-c2a168a3efd0)
 
 ### Step 9: Configuring TheHive Server
 - Installed necessary dependencies.
 - Configured Java, Cassandra, and Elasticsearch.
 - Installed TheHive.
 
-![TheHive Installation](path/to/screenshot_thehive_installation.png)
+![ensuring thehive status is up and running](https://github.com/user-attachments/assets/e1c6ff95-a2c4-4c6c-be24-8b3aaa5d9f20)
 
 ### Step 10-14: Installing Dependencies on TheHive Server
 - Installed Java, Cassandra, Elasticsearch, and TheHive with specified commands.
 
-![Cassandra and Elasticsearch Installation](path/to/screenshot_cassandra_elasticsearch_installation.png)
+![Installing TheHive dependencies](https://github.com/user-attachments/assets/a9b67055-b718-45f6-a8f8-383d42618298)
+![Enabling elasticsearch service](https://github.com/user-attachments/assets/f8685464-b032-4fc7-85f3-59d801bfb0b8)
+
 
 ### Step 15: TheHive Credentials
 Default credentials for TheHive dashboard are `admin@thehive.local` / `secret`.
@@ -98,55 +115,61 @@ Default credentials for TheHive dashboard are `admin@thehive.local` / `secret`.
 - Edited Cassandra and Elasticsearch configuration files.
 - Ensured network settings and authentication methods are correctly set.
 
+![Configuration Elasticsearch Network](https://github.com/user-attachments/assets/6e848685-2a48-49fe-8786-a278c3ec6062)
+![Elasticsearch Cluster Name and Enabling Nodename](https://github.com/user-attachments/assets/4081ce01-e202-452f-bf8f-1dc6ce5c3b10)
+![Cleaning up Cassandra and Restarting the Service](https://github.com/user-attachments/assets/451ad8fd-7bc7-4816-9db8-c84f6bc5776d)
+![Filebeat for Log Ingestion](https://github.com/user-attachments/assets/134f2051-ba0b-4d05-9bf3-fd262b48ed26)
+
 ### Step 19-20: TheHive Ownership and Configuration
 - Changed ownership of `/opt/thp` to TheHive.
 - Edited application.conf for database and index configurations.
+- Then a confirmation that my services were running. 
+
+![TheHive Ownership](https://github.com/user-attachments/assets/b6a067dc-4a19-4961-b44f-f114be09f78a)
+![Running Services](https://github.com/user-attachments/assets/e7d295a2-aee8-4bc6-9d78-913d03dcda3a)
+
 
 ### Step 21: Login to TheHive Dashboard
 Logged in and explored TheHive dashboard. It was rewarding to see the fruits of my labor!
 
-![TheHive Dashboard](path/to/screenshot_thehive_dashboard.png)
 
 ### Step 22-24: Configuring Wazuh Dashboard and Ingesting Telemetry
-- Added a Windows Agent.
-- Configured log ingestion from Sysmon and PowerShell.
+- Added a Windows Agent within Wazuh for Log Ingestion.
+- Reviewed location of Wazuh log archives and implemented proper log ingestion. 
+
+![wazuh log archives](https://github.com/user-attachments/assets/56ac1c76-7f0b-4b14-b00e-3f4497ef610c)
+![Deploying windows wazuh agent](https://github.com/user-attachments/assets/dc5a108b-4324-40ce-94f6-fd3f57756c99)
+![log ingesting for wazuh](https://github.com/user-attachments/assets/51d1b6a5-1eb0-4b21-af40-9d6ff8508d01)
+![Showing our windows agent on Wazuh](https://github.com/user-attachments/assets/0b3f9edd-a0c3-4209-836a-b43c2107c516)
 
 ### Step 25: Creating Custom Wazuh Rule
 Created a rule to detect Mimikatz using Sysmon event ID.
 
+![mimikatz rule](https://github.com/user-attachments/assets/b3a347eb-51af-4981-8c7f-3d408a6e36f3)
+![mimkatz event grep](https://github.com/user-attachments/assets/fc717b59-dfe4-472e-a7a1-cb8b64eec879)
+
 ### Step 26: Testing Custom Rule
 Validated Mimikatz detection.
 
-![Mimikatz Detection](path/to/screenshot_mimikatz_detection.png)
+![showing our sysmon is picking up mimikatz](https://github.com/user-attachments/assets/e4f923bd-bdbb-4095-abca-cea5f4a56c8c)
 
 ### Step 27: Integrating SOAR with Shuffler
 - Created an account on Shuffler.
-- Integrated Shuffler with Wazuh Manager for automated response.
+- I was not yet able to fully integrate my SOAR solution into Wazuh as I relieved it is a big part of the project and will need more research on getting that configured fully.
+- Instead I got the webhook configured so that I can test it with my mimikatz detection and start getting some experience configuring that. 
 
-![Shuffler Integration](path/to/screenshot_shuffler_integration.png)
+![Webhook](https://github.com/user-attachments/assets/4b01167f-4bc9-4cfc-98cb-543e81ea60f5)
+![webhook for shuffle into wazuh](https://github.com/user-attachments/assets/5262fc9a-f8b7-4369-ad58-e7474e7430d1)
 
-### Step 28: Automated Task Creation
-- Defined and configured automated tasks in Shuffler.
-- Tested tasks for functionality.
 
-### Step 29: Integrating Case Management with TheHive
-- Integrated Shuffler alerts with TheHive for case management.
-- Configured criteria for case creation and workflows.
-
-![TheHive Case Management](path/to/screenshot_thehive_case_management.png)
+## Next Steps and Moving Forward
+I have had the excellent chance to work with a fully configured Hive setup with CyberNow Labs. They are a training and internship group that is training me on essential SOC Analyst skills. I will be adding some sample investigations
+and tickets that I have written in TheHive excluding any sort of identifying details. This will showcase that I have been able to write successful tickets and perform investigations. I have written tickets that have come from
+Proofpoint, Crowdstrike, and IBM QRadar alerts. 
 
 ---
 
 ## Conclusion
-
-By following these steps, you can establish a fully functional SOC Automation Lab with advanced detection, analysis, and response capabilities. Continuous updates and refinements are crucial to stay ahead of evolving threats. Stay tuned for updates and screenshots of the automation workflow.
-
----
-
-This project was a long and tedious process but extremely rewarding. Special thanks to the YouTuber MYDFIR for the project idea and workflow information. I am still working on setting up the automation using Shuffler and TheHive, but have had to proceed slowly due to my Senior Project for the Computer Technology BA. Stay tuned for updates with screenshots of my automation workflow! Thank you for reading and going through this project with me.
-
-
-Conclusion
 
 By following these detailed steps, you can establish a fully functional SOC Automation Lab equipped with advanced detection, analysis, and response capabilities.
 Continuously update and refine your configurations and strategies to stay ahead of evolving threats in the cybersecurity landscape.
