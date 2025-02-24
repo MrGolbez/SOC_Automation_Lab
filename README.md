@@ -162,11 +162,6 @@ Validated Mimikatz detection.
 ![webhook for shuffle into wazuh](https://github.com/user-attachments/assets/5262fc9a-f8b7-4369-ad58-e7474e7430d1)
 
 
-## Next Steps and Moving Forward
-I have had the excellent chance to work with a fully configured Hive setup with CyberNow Labs. They are a training and internship group that is training me on essential SOC Analyst skills. I will be adding some sample investigations
-and tickets that I have written in TheHive excluding any sort of identifying details. This will showcase that I have been able to write successful tickets and perform investigations. I have written tickets that have come from
-Proofpoint, Crowdstrike, and IBM QRadar alerts. 
-
 ---
 
 ## Conclusion
